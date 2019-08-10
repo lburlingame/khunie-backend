@@ -1,0 +1,94 @@
+scalar DateTime
+
+type Query {
+	info: String!
+
+}
+
+type User {
+	id: ID!
+	email: String!
+	name: String!
+	boards: [Board!]!
+	invited: [Board!]!
+	teams: [TeamMembership!]!
+	createdAt: DateTime!	
+}
+
+type Team {
+	id: ID! 
+	owner: User!
+	boards: [Board!]!
+	createdAt: DateTime!
+}
+
+type TeamMembership {
+	id: ID!
+	member: User!
+	team: Team!
+	role: Role! @default(value: "MEMBER")
+	createdAt: DateTime!
+}
+
+type Board {
+	id: ID!
+	owner: User!
+	name: String!
+	members: [User!]!
+	lists: [List!]!
+	visibility: Visibility! @default(value: "PRIVATE")
+	createdAt: DateTime!
+	updatedAt: DateTime!
+}
+
+type List {
+	id: ID!
+	board: Board!
+	name: String!
+	cards: [Card!]!
+	createdAt: DateTime!
+}
+
+type Card {
+	id: ID!
+	list: List!
+	title: String!
+	description: String!
+	comments: [Comment!]!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+}
+
+type Comment {
+	id: ID!
+	card: Card!
+	postedBy: User!
+	content: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+}
+
+type AuthPayload {
+	token: String
+	user: User
+}
+
+
+enum Role {
+	ADMIN
+	MEMBER
+	VIEWER
+}
+
+enum Visibility {
+	PRIVATE
+	PUBLIC
+	TEAM
+}
+
+enum ListOrder {
+	name_ASC
+	name_DESC
+	createdAt_ASC
+	createdAt_DESC
+}

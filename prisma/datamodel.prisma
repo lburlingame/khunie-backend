@@ -1,0 +1,75 @@
+type User {
+  id: ID! @id
+  name: String! @unique
+  email: String! @unique
+  password: String!
+	boards: [Board!]! @relation(name: "OwnedBoards")
+	invited: [Board!]! @relation(name: "InvitedBoards")
+	teams: [TeamMembership!]!
+	createdAt: DateTime! @createdAt
+}
+
+type Team {
+	id: ID! @id
+	owner: User!
+	boards: [Board!]!
+	createdAt: DateTime! @createdAt
+}
+
+type TeamMembership {
+	id: ID! @id
+	member: User!
+	team: Team!
+	role: Role!
+	createdAt: DateTime! @createdAt
+}
+
+type Board {
+  id: ID! @id
+  owner: User! @relation(name: "OwnedBoards")
+  name: String!
+	members: [User!]! @relation(name: "InvitedBoards")
+	lists: [List!]!
+	visibility: Visibility!
+	createdAt: DateTime! @createdAt
+	updatedAt: DateTime! @updatedAt
+}
+
+type List {
+	id: ID! @id
+	board: Board!
+	name: String!
+	cards: [Card!]!
+	createdAt: DateTime! @createdAt
+}
+
+type Card {
+	id: ID! @id
+	list: List!
+	title: String!
+	description: String
+	comments: [Comment!]!
+	createdAt: DateTime! @createdAt
+	updatedAt: DateTime! @updatedAt
+}
+
+type Comment {
+	id: ID! @id
+	card: Card!
+	postedBy: User!
+	content: String!
+	createdAt: DateTime! @createdAt
+	updatedAt: DateTime! @updatedAt
+}
+
+enum Role {
+	ADMIN
+	MEMBER
+	VIEWER
+}
+
+enum Visibility {
+	PRIVATE
+	PUBLIC
+	TEAM
+}

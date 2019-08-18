@@ -5,6 +5,7 @@ type User {
   password: String!
 	boards: [Board!]! @relation(name: "OwnedBoards")
 	invited: [Board!]! @relation(name: "InvitedBoards")
+  comments: [Comment!]! 
 	teams: [TeamMembership!]!
 	createdAt: DateTime! @createdAt
 }
@@ -12,15 +13,17 @@ type User {
 type Team {
 	id: ID! @id
 	owner: User!
+	name: String! @unique
+  description: String
 	boards: [Board!]!
 	createdAt: DateTime! @createdAt
 }
 
 type TeamMembership {
 	id: ID! @id
-	member: User!
+	user: User!
 	team: Team!
-	role: Role!
+	role: Role! @default(value: MEMBER)
 	createdAt: DateTime! @createdAt
 }
 
@@ -28,9 +31,10 @@ type Board {
   id: ID! @id
   owner: User! @relation(name: "OwnedBoards")
   name: String!
+  description: String
 	members: [User!]! @relation(name: "InvitedBoards")
 	lists: [List!]!
-	visibility: Visibility!
+	visibility: Visibility! @default(value: PRIVATE)
 	createdAt: DateTime! @createdAt
 	updatedAt: DateTime! @updatedAt
 }
@@ -38,6 +42,7 @@ type Board {
 type List {
 	id: ID! @id
 	board: Board!
+  createdBy: User!
 	name: String!
 	cards: [Card!]!
 	createdAt: DateTime! @createdAt
@@ -46,6 +51,7 @@ type List {
 type Card {
 	id: ID! @id
 	list: List!
+  createdBy: User!
 	title: String!
 	description: String
 	comments: [Comment!]!
@@ -58,6 +64,7 @@ type Comment {
 	card: Card!
 	postedBy: User!
 	content: String!
+  replies: [Comment!]!
 	createdAt: DateTime! @createdAt
 	updatedAt: DateTime! @updatedAt
 }

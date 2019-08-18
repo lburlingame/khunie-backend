@@ -4,6 +4,7 @@
   "description": "khunie.com express apollo graphql server",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon --exec babel-node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,5 +34,11 @@
     "helmet": "^3.20.0",
     "jsonwebtoken": "^8.5.1",
     "prisma-client-lib": "^1.34.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "nodemon": "^1.19.1"
   }
 }

@@ -39,6 +39,7 @@ type Board {
   id: ID!
   owner: User!
   name: String!
+  description: String
   members(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   lists(where: ListWhereInput, orderBy: ListOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [List!]
   visibility: Visibility!
@@ -56,9 +57,10 @@ input BoardCreateInput {
   id: ID
   owner: UserCreateOneWithoutBoardsInput!
   name: String!
+  description: String
   members: UserCreateManyWithoutInvitedInput
   lists: ListCreateManyWithoutBoardInput
-  visibility: Visibility!
+  visibility: Visibility
 }
 
 input BoardCreateManyInput {
@@ -85,24 +87,27 @@ input BoardCreateWithoutListsInput {
   id: ID
   owner: UserCreateOneWithoutBoardsInput!
   name: String!
+  description: String
   members: UserCreateManyWithoutInvitedInput
-  visibility: Visibility!
+  visibility: Visibility
 }
 
 input BoardCreateWithoutMembersInput {
   id: ID
   owner: UserCreateOneWithoutBoardsInput!
   name: String!
+  description: String
   lists: ListCreateManyWithoutBoardInput
-  visibility: Visibility!
+  visibility: Visibility
 }
 
 input BoardCreateWithoutOwnerInput {
   id: ID
   name: String!
+  description: String
   members: UserCreateManyWithoutInvitedInput
   lists: ListCreateManyWithoutBoardInput
-  visibility: Visibility!
+  visibility: Visibility
 }
 
 type BoardEdge {
@@ -115,6 +120,8 @@ enum BoardOrderByInput {
   id_DESC
   name_ASC
   name_DESC
+  description_ASC
+  description_DESC
   visibility_ASC
   visibility_DESC
   createdAt_ASC
@@ -126,6 +133,7 @@ enum BoardOrderByInput {
 type BoardPreviousValues {
   id: ID!
   name: String!
+  description: String
   visibility: Visibility!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -160,6 +168,20 @@ input BoardScalarWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
   visibility: Visibility
   visibility_not: Visibility
   visibility_in: [Visibility!]
@@ -206,6 +228,7 @@ input BoardSubscriptionWhereInput {
 input BoardUpdateDataInput {
   owner: UserUpdateOneRequiredWithoutBoardsInput
   name: String
+  description: String
   members: UserUpdateManyWithoutInvitedInput
   lists: ListUpdateManyWithoutBoardInput
   visibility: Visibility
@@ -214,6 +237,7 @@ input BoardUpdateDataInput {
 input BoardUpdateInput {
   owner: UserUpdateOneRequiredWithoutBoardsInput
   name: String
+  description: String
   members: UserUpdateManyWithoutInvitedInput
   lists: ListUpdateManyWithoutBoardInput
   visibility: Visibility
@@ -221,6 +245,7 @@ input BoardUpdateInput {
 
 input BoardUpdateManyDataInput {
   name: String
+  description: String
   visibility: Visibility
 }
 
@@ -238,6 +263,7 @@ input BoardUpdateManyInput {
 
 input BoardUpdateManyMutationInput {
   name: String
+  description: String
   visibility: Visibility
 }
 
@@ -280,6 +306,7 @@ input BoardUpdateOneRequiredWithoutListsInput {
 input BoardUpdateWithoutListsDataInput {
   owner: UserUpdateOneRequiredWithoutBoardsInput
   name: String
+  description: String
   members: UserUpdateManyWithoutInvitedInput
   visibility: Visibility
 }
@@ -287,12 +314,14 @@ input BoardUpdateWithoutListsDataInput {
 input BoardUpdateWithoutMembersDataInput {
   owner: UserUpdateOneRequiredWithoutBoardsInput
   name: String
+  description: String
   lists: ListUpdateManyWithoutBoardInput
   visibility: Visibility
 }
 
 input BoardUpdateWithoutOwnerDataInput {
   name: String
+  description: String
   members: UserUpdateManyWithoutInvitedInput
   lists: ListUpdateManyWithoutBoardInput
   visibility: Visibility
@@ -366,6 +395,20 @@ input BoardWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
   members_every: UserWhereInput
   members_some: UserWhereInput
   members_none: UserWhereInput
@@ -404,6 +447,7 @@ input BoardWhereUniqueInput {
 type Card {
   id: ID!
   list: List!
+  createdBy: User!
   title: String!
   description: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
@@ -420,6 +464,7 @@ type CardConnection {
 input CardCreateInput {
   id: ID
   list: ListCreateOneWithoutCardsInput!
+  createdBy: UserCreateOneInput!
   title: String!
   description: String
   comments: CommentCreateManyWithoutCardInput
@@ -438,12 +483,14 @@ input CardCreateOneWithoutCommentsInput {
 input CardCreateWithoutCommentsInput {
   id: ID
   list: ListCreateOneWithoutCardsInput!
+  createdBy: UserCreateOneInput!
   title: String!
   description: String
 }
 
 input CardCreateWithoutListInput {
   id: ID
+  createdBy: UserCreateOneInput!
   title: String!
   description: String
   comments: CommentCreateManyWithoutCardInput
@@ -559,6 +606,7 @@ input CardSubscriptionWhereInput {
 
 input CardUpdateInput {
   list: ListUpdateOneRequiredWithoutCardsInput
+  createdBy: UserUpdateOneRequiredInput
   title: String
   description: String
   comments: CommentUpdateManyWithoutCardInput
@@ -600,11 +648,13 @@ input CardUpdateOneRequiredWithoutCommentsInput {
 
 input CardUpdateWithoutCommentsDataInput {
   list: ListUpdateOneRequiredWithoutCardsInput
+  createdBy: UserUpdateOneRequiredInput
   title: String
   description: String
 }
 
 input CardUpdateWithoutListDataInput {
+  createdBy: UserUpdateOneRequiredInput
   title: String
   description: String
   comments: CommentUpdateManyWithoutCardInput
@@ -642,6 +692,7 @@ input CardWhereInput {
   id_ends_with: ID
   id_not_ends_with: ID
   list: ListWhereInput
+  createdBy: UserWhereInput
   title: String
   title_not: String
   title_in: [String!]
@@ -703,6 +754,7 @@ type Comment {
   card: Card!
   postedBy: User!
   content: String!
+  replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -716,8 +768,14 @@ type CommentConnection {
 input CommentCreateInput {
   id: ID
   card: CardCreateOneWithoutCommentsInput!
-  postedBy: UserCreateOneInput!
+  postedBy: UserCreateOneWithoutCommentsInput!
   content: String!
+  replies: CommentCreateManyInput
+}
+
+input CommentCreateManyInput {
+  create: [CommentCreateInput!]
+  connect: [CommentWhereUniqueInput!]
 }
 
 input CommentCreateManyWithoutCardInput {
@@ -725,10 +783,23 @@ input CommentCreateManyWithoutCardInput {
   connect: [CommentWhereUniqueInput!]
 }
 
+input CommentCreateManyWithoutPostedByInput {
+  create: [CommentCreateWithoutPostedByInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
 input CommentCreateWithoutCardInput {
   id: ID
-  postedBy: UserCreateOneInput!
+  postedBy: UserCreateOneWithoutCommentsInput!
   content: String!
+  replies: CommentCreateManyInput
+}
+
+input CommentCreateWithoutPostedByInput {
+  id: ID
+  card: CardCreateOneWithoutCommentsInput!
+  content: String!
+  replies: CommentCreateManyInput
 }
 
 type CommentEdge {
@@ -822,14 +893,34 @@ input CommentSubscriptionWhereInput {
   NOT: [CommentSubscriptionWhereInput!]
 }
 
+input CommentUpdateDataInput {
+  card: CardUpdateOneRequiredWithoutCommentsInput
+  postedBy: UserUpdateOneRequiredWithoutCommentsInput
+  content: String
+  replies: CommentUpdateManyInput
+}
+
 input CommentUpdateInput {
   card: CardUpdateOneRequiredWithoutCommentsInput
-  postedBy: UserUpdateOneRequiredInput
+  postedBy: UserUpdateOneRequiredWithoutCommentsInput
   content: String
+  replies: CommentUpdateManyInput
 }
 
 input CommentUpdateManyDataInput {
   content: String
+}
+
+input CommentUpdateManyInput {
+  create: [CommentCreateInput!]
+  update: [CommentUpdateWithWhereUniqueNestedInput!]
+  upsert: [CommentUpsertWithWhereUniqueNestedInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
 
 input CommentUpdateManyMutationInput {
@@ -848,14 +939,38 @@ input CommentUpdateManyWithoutCardInput {
   updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
 
+input CommentUpdateManyWithoutPostedByInput {
+  create: [CommentCreateWithoutPostedByInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutPostedByInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutPostedByInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
 input CommentUpdateManyWithWhereNestedInput {
   where: CommentScalarWhereInput!
   data: CommentUpdateManyDataInput!
 }
 
 input CommentUpdateWithoutCardDataInput {
-  postedBy: UserUpdateOneRequiredInput
+  postedBy: UserUpdateOneRequiredWithoutCommentsInput
   content: String
+  replies: CommentUpdateManyInput
+}
+
+input CommentUpdateWithoutPostedByDataInput {
+  card: CardUpdateOneRequiredWithoutCommentsInput
+  content: String
+  replies: CommentUpdateManyInput
+}
+
+input CommentUpdateWithWhereUniqueNestedInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateDataInput!
 }
 
 input CommentUpdateWithWhereUniqueWithoutCardInput {
@@ -863,10 +978,27 @@ input CommentUpdateWithWhereUniqueWithoutCardInput {
   data: CommentUpdateWithoutCardDataInput!
 }
 
+input CommentUpdateWithWhereUniqueWithoutPostedByInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutPostedByDataInput!
+}
+
+input CommentUpsertWithWhereUniqueNestedInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateDataInput!
+  create: CommentCreateInput!
+}
+
 input CommentUpsertWithWhereUniqueWithoutCardInput {
   where: CommentWhereUniqueInput!
   update: CommentUpdateWithoutCardDataInput!
   create: CommentCreateWithoutCardInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutPostedByInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutPostedByDataInput!
+  create: CommentCreateWithoutPostedByInput!
 }
 
 input CommentWhereInput {
@@ -900,6 +1032,9 @@ input CommentWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  replies_every: CommentWhereInput
+  replies_some: CommentWhereInput
+  replies_none: CommentWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -930,6 +1065,7 @@ scalar DateTime
 type List {
   id: ID!
   board: Board!
+  createdBy: User!
   name: String!
   cards(where: CardWhereInput, orderBy: CardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Card!]
   createdAt: DateTime!
@@ -944,6 +1080,7 @@ type ListConnection {
 input ListCreateInput {
   id: ID
   board: BoardCreateOneWithoutListsInput!
+  createdBy: UserCreateOneInput!
   name: String!
   cards: CardCreateManyWithoutListInput
 }
@@ -960,6 +1097,7 @@ input ListCreateOneWithoutCardsInput {
 
 input ListCreateWithoutBoardInput {
   id: ID
+  createdBy: UserCreateOneInput!
   name: String!
   cards: CardCreateManyWithoutListInput
 }
@@ -967,6 +1105,7 @@ input ListCreateWithoutBoardInput {
 input ListCreateWithoutCardsInput {
   id: ID
   board: BoardCreateOneWithoutListsInput!
+  createdBy: UserCreateOneInput!
   name: String!
 }
 
@@ -1052,6 +1191,7 @@ input ListSubscriptionWhereInput {
 
 input ListUpdateInput {
   board: BoardUpdateOneRequiredWithoutListsInput
+  createdBy: UserUpdateOneRequiredInput
   name: String
   cards: CardUpdateManyWithoutListInput
 }
@@ -1089,12 +1229,14 @@ input ListUpdateOneRequiredWithoutCardsInput {
 }
 
 input ListUpdateWithoutBoardDataInput {
+  createdBy: UserUpdateOneRequiredInput
   name: String
   cards: CardUpdateManyWithoutListInput
 }
 
 input ListUpdateWithoutCardsDataInput {
   board: BoardUpdateOneRequiredWithoutListsInput
+  createdBy: UserUpdateOneRequiredInput
   name: String
 }
 
@@ -1130,6 +1272,7 @@ input ListWhereInput {
   id_ends_with: ID
   id_not_ends_with: ID
   board: BoardWhereInput
+  createdBy: UserWhereInput
   name: String
   name_not: String
   name_in: [String!]
@@ -1193,6 +1336,7 @@ type Mutation {
   deleteManyLists(where: ListWhereInput): BatchPayload!
   createTeam(data: TeamCreateInput!): Team!
   updateTeam(data: TeamUpdateInput!, where: TeamWhereUniqueInput!): Team
+  updateManyTeams(data: TeamUpdateManyMutationInput!, where: TeamWhereInput): BatchPayload!
   upsertTeam(where: TeamWhereUniqueInput!, create: TeamCreateInput!, update: TeamUpdateInput!): Team!
   deleteTeam(where: TeamWhereUniqueInput!): Team
   deleteManyTeams(where: TeamWhereInput): BatchPayload!
@@ -1271,6 +1415,8 @@ type Subscription {
 type Team {
   id: ID!
   owner: User!
+  name: String!
+  description: String
   boards(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Board!]
   createdAt: DateTime!
 }
@@ -1284,6 +1430,8 @@ type TeamConnection {
 input TeamCreateInput {
   id: ID
   owner: UserCreateOneInput!
+  name: String!
+  description: String
   boards: BoardCreateManyInput
 }
 
@@ -1299,7 +1447,7 @@ type TeamEdge {
 
 type TeamMembership {
   id: ID!
-  member: User!
+  user: User!
   team: Team!
   role: Role!
   createdAt: DateTime!
@@ -1313,20 +1461,20 @@ type TeamMembershipConnection {
 
 input TeamMembershipCreateInput {
   id: ID
-  member: UserCreateOneWithoutTeamsInput!
+  user: UserCreateOneWithoutTeamsInput!
   team: TeamCreateOneInput!
-  role: Role!
+  role: Role
 }
 
-input TeamMembershipCreateManyWithoutMemberInput {
-  create: [TeamMembershipCreateWithoutMemberInput!]
+input TeamMembershipCreateManyWithoutUserInput {
+  create: [TeamMembershipCreateWithoutUserInput!]
   connect: [TeamMembershipWhereUniqueInput!]
 }
 
-input TeamMembershipCreateWithoutMemberInput {
+input TeamMembershipCreateWithoutUserInput {
   id: ID
   team: TeamCreateOneInput!
-  role: Role!
+  role: Role
 }
 
 type TeamMembershipEdge {
@@ -1400,7 +1548,7 @@ input TeamMembershipSubscriptionWhereInput {
 }
 
 input TeamMembershipUpdateInput {
-  member: UserUpdateOneRequiredWithoutTeamsInput
+  user: UserUpdateOneRequiredWithoutTeamsInput
   team: TeamUpdateOneRequiredInput
   role: Role
 }
@@ -1413,14 +1561,14 @@ input TeamMembershipUpdateManyMutationInput {
   role: Role
 }
 
-input TeamMembershipUpdateManyWithoutMemberInput {
-  create: [TeamMembershipCreateWithoutMemberInput!]
+input TeamMembershipUpdateManyWithoutUserInput {
+  create: [TeamMembershipCreateWithoutUserInput!]
   delete: [TeamMembershipWhereUniqueInput!]
   connect: [TeamMembershipWhereUniqueInput!]
   set: [TeamMembershipWhereUniqueInput!]
   disconnect: [TeamMembershipWhereUniqueInput!]
-  update: [TeamMembershipUpdateWithWhereUniqueWithoutMemberInput!]
-  upsert: [TeamMembershipUpsertWithWhereUniqueWithoutMemberInput!]
+  update: [TeamMembershipUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [TeamMembershipUpsertWithWhereUniqueWithoutUserInput!]
   deleteMany: [TeamMembershipScalarWhereInput!]
   updateMany: [TeamMembershipUpdateManyWithWhereNestedInput!]
 }
@@ -1430,20 +1578,20 @@ input TeamMembershipUpdateManyWithWhereNestedInput {
   data: TeamMembershipUpdateManyDataInput!
 }
 
-input TeamMembershipUpdateWithoutMemberDataInput {
+input TeamMembershipUpdateWithoutUserDataInput {
   team: TeamUpdateOneRequiredInput
   role: Role
 }
 
-input TeamMembershipUpdateWithWhereUniqueWithoutMemberInput {
+input TeamMembershipUpdateWithWhereUniqueWithoutUserInput {
   where: TeamMembershipWhereUniqueInput!
-  data: TeamMembershipUpdateWithoutMemberDataInput!
+  data: TeamMembershipUpdateWithoutUserDataInput!
 }
 
-input TeamMembershipUpsertWithWhereUniqueWithoutMemberInput {
+input TeamMembershipUpsertWithWhereUniqueWithoutUserInput {
   where: TeamMembershipWhereUniqueInput!
-  update: TeamMembershipUpdateWithoutMemberDataInput!
-  create: TeamMembershipCreateWithoutMemberInput!
+  update: TeamMembershipUpdateWithoutUserDataInput!
+  create: TeamMembershipCreateWithoutUserInput!
 }
 
 input TeamMembershipWhereInput {
@@ -1461,7 +1609,7 @@ input TeamMembershipWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  member: UserWhereInput
+  user: UserWhereInput
   team: TeamWhereInput
   role: Role
   role_not: Role
@@ -1487,12 +1635,18 @@ input TeamMembershipWhereUniqueInput {
 enum TeamOrderByInput {
   id_ASC
   id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
   createdAt_ASC
   createdAt_DESC
 }
 
 type TeamPreviousValues {
   id: ID!
+  name: String!
+  description: String
   createdAt: DateTime!
 }
 
@@ -1516,12 +1670,21 @@ input TeamSubscriptionWhereInput {
 
 input TeamUpdateDataInput {
   owner: UserUpdateOneRequiredInput
+  name: String
+  description: String
   boards: BoardUpdateManyInput
 }
 
 input TeamUpdateInput {
   owner: UserUpdateOneRequiredInput
+  name: String
+  description: String
   boards: BoardUpdateManyInput
+}
+
+input TeamUpdateManyMutationInput {
+  name: String
+  description: String
 }
 
 input TeamUpdateOneRequiredInput {
@@ -1552,6 +1715,34 @@ input TeamWhereInput {
   id_ends_with: ID
   id_not_ends_with: ID
   owner: UserWhereInput
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
   boards_every: BoardWhereInput
   boards_some: BoardWhereInput
   boards_none: BoardWhereInput
@@ -1570,6 +1761,7 @@ input TeamWhereInput {
 
 input TeamWhereUniqueInput {
   id: ID
+  name: String
 }
 
 type User {
@@ -1579,6 +1771,7 @@ type User {
   password: String!
   boards(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Board!]
   invited(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Board!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   teams(where: TeamMembershipWhereInput, orderBy: TeamMembershipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TeamMembership!]
   createdAt: DateTime!
 }
@@ -1596,7 +1789,8 @@ input UserCreateInput {
   password: String!
   boards: BoardCreateManyWithoutOwnerInput
   invited: BoardCreateManyWithoutMembersInput
-  teams: TeamMembershipCreateManyWithoutMemberInput
+  comments: CommentCreateManyWithoutPostedByInput
+  teams: TeamMembershipCreateManyWithoutUserInput
 }
 
 input UserCreateManyWithoutInvitedInput {
@@ -1614,6 +1808,11 @@ input UserCreateOneWithoutBoardsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateOneWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreateOneWithoutTeamsInput {
   create: UserCreateWithoutTeamsInput
   connect: UserWhereUniqueInput
@@ -1625,7 +1824,18 @@ input UserCreateWithoutBoardsInput {
   email: String!
   password: String!
   invited: BoardCreateManyWithoutMembersInput
-  teams: TeamMembershipCreateManyWithoutMemberInput
+  comments: CommentCreateManyWithoutPostedByInput
+  teams: TeamMembershipCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutCommentsInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  boards: BoardCreateManyWithoutOwnerInput
+  invited: BoardCreateManyWithoutMembersInput
+  teams: TeamMembershipCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutInvitedInput {
@@ -1634,7 +1844,8 @@ input UserCreateWithoutInvitedInput {
   email: String!
   password: String!
   boards: BoardCreateManyWithoutOwnerInput
-  teams: TeamMembershipCreateManyWithoutMemberInput
+  comments: CommentCreateManyWithoutPostedByInput
+  teams: TeamMembershipCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutTeamsInput {
@@ -1644,6 +1855,7 @@ input UserCreateWithoutTeamsInput {
   password: String!
   boards: BoardCreateManyWithoutOwnerInput
   invited: BoardCreateManyWithoutMembersInput
+  comments: CommentCreateManyWithoutPostedByInput
 }
 
 type UserEdge {
@@ -1766,7 +1978,8 @@ input UserUpdateDataInput {
   password: String
   boards: BoardUpdateManyWithoutOwnerInput
   invited: BoardUpdateManyWithoutMembersInput
-  teams: TeamMembershipUpdateManyWithoutMemberInput
+  comments: CommentUpdateManyWithoutPostedByInput
+  teams: TeamMembershipUpdateManyWithoutUserInput
 }
 
 input UserUpdateInput {
@@ -1775,7 +1988,8 @@ input UserUpdateInput {
   password: String
   boards: BoardUpdateManyWithoutOwnerInput
   invited: BoardUpdateManyWithoutMembersInput
-  teams: TeamMembershipUpdateManyWithoutMemberInput
+  comments: CommentUpdateManyWithoutPostedByInput
+  teams: TeamMembershipUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyDataInput {
@@ -1821,6 +2035,13 @@ input UserUpdateOneRequiredWithoutBoardsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateOneRequiredWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput
+  update: UserUpdateWithoutCommentsDataInput
+  upsert: UserUpsertWithoutCommentsInput
+  connect: UserWhereUniqueInput
+}
+
 input UserUpdateOneRequiredWithoutTeamsInput {
   create: UserCreateWithoutTeamsInput
   update: UserUpdateWithoutTeamsDataInput
@@ -1833,7 +2054,17 @@ input UserUpdateWithoutBoardsDataInput {
   email: String
   password: String
   invited: BoardUpdateManyWithoutMembersInput
-  teams: TeamMembershipUpdateManyWithoutMemberInput
+  comments: CommentUpdateManyWithoutPostedByInput
+  teams: TeamMembershipUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutCommentsDataInput {
+  name: String
+  email: String
+  password: String
+  boards: BoardUpdateManyWithoutOwnerInput
+  invited: BoardUpdateManyWithoutMembersInput
+  teams: TeamMembershipUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutInvitedDataInput {
@@ -1841,7 +2072,8 @@ input UserUpdateWithoutInvitedDataInput {
   email: String
   password: String
   boards: BoardUpdateManyWithoutOwnerInput
-  teams: TeamMembershipUpdateManyWithoutMemberInput
+  comments: CommentUpdateManyWithoutPostedByInput
+  teams: TeamMembershipUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutTeamsDataInput {
@@ -1850,6 +2082,7 @@ input UserUpdateWithoutTeamsDataInput {
   password: String
   boards: BoardUpdateManyWithoutOwnerInput
   invited: BoardUpdateManyWithoutMembersInput
+  comments: CommentUpdateManyWithoutPostedByInput
 }
 
 input UserUpdateWithWhereUniqueWithoutInvitedInput {
@@ -1865,6 +2098,11 @@ input UserUpsertNestedInput {
 input UserUpsertWithoutBoardsInput {
   update: UserUpdateWithoutBoardsDataInput!
   create: UserCreateWithoutBoardsInput!
+}
+
+input UserUpsertWithoutCommentsInput {
+  update: UserUpdateWithoutCommentsDataInput!
+  create: UserCreateWithoutCommentsInput!
 }
 
 input UserUpsertWithoutTeamsInput {
@@ -1941,6 +2179,9 @@ input UserWhereInput {
   invited_every: BoardWhereInput
   invited_some: BoardWhereInput
   invited_none: BoardWhereInput
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
   teams_every: TeamMembershipWhereInput
   teams_some: TeamMembershipWhereInput
   teams_none: TeamMembershipWhereInput

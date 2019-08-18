@@ -2,7 +2,22 @@ scalar DateTime
 
 type Query {
 	info: String!
+  getBoards: UserBoards!
+}
 
+type Mutation {
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+  createBoard(name: String!): Board
+  createList(boardId: ID!, name: String!): List
+  createCard(listId: ID!, title: String!): Card
+  createComment(cardId: ID!, content: String!): Comment
+  createReply(commentId: ID!, content: String!): Comment
+}
+
+type Subscription {
+	newList: List
+	newCard: Card
 }
 
 type User {
@@ -11,6 +26,7 @@ type User {
 	name: String!
 	boards: [Board!]!
 	invited: [Board!]!
+  comments: [Comment!]!
 	teams: [TeamMembership!]!
 	createdAt: DateTime!	
 }
@@ -18,15 +34,17 @@ type User {
 type Team {
 	id: ID! 
 	owner: User!
+	name: String!
+  description: String
 	boards: [Board!]!
 	createdAt: DateTime!
 }
 
 type TeamMembership {
 	id: ID!
-	member: User!
+	user: User!
 	team: Team!
-	role: Role! @default(value: "MEMBER")
+	role: Role!
 	createdAt: DateTime!
 }
 
@@ -34,9 +52,10 @@ type Board {
 	id: ID!
 	owner: User!
 	name: String!
+  description: String
 	members: [User!]!
 	lists: [List!]!
-	visibility: Visibility! @default(value: "PRIVATE")
+	visibility: Visibility!
 	createdAt: DateTime!
 	updatedAt: DateTime!
 }
@@ -44,6 +63,7 @@ type Board {
 type List {
 	id: ID!
 	board: Board!
+  createdBy: User!
 	name: String!
 	cards: [Card!]!
 	createdAt: DateTime!
@@ -52,6 +72,7 @@ type List {
 type Card {
 	id: ID!
 	list: List!
+  createdBy: User!
 	title: String!
 	description: String!
 	comments: [Comment!]!
@@ -64,6 +85,7 @@ type Comment {
 	card: Card!
 	postedBy: User!
 	content: String!
+  replies: [Comment!]!
 	createdAt: DateTime!
 	updatedAt: DateTime!
 }
@@ -72,7 +94,6 @@ type AuthPayload {
 	token: String
 	user: User
 }
-
 
 enum Role {
 	ADMIN
@@ -91,4 +112,9 @@ enum ListOrder {
 	name_DESC
 	createdAt_ASC
 	createdAt_DESC
+}
+
+type UserBoards {
+  boards: [Board!]!
+  invited: [Board!]!
 }

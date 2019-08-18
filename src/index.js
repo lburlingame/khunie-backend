@@ -1,11 +1,11 @@
 require('dotenv').config();
 
+const { ApolloServer } = require('apollo-server-express');
+const { createServer } = require('http');
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-
-const { ApolloServer } = require('apollo-server-express');
-const { createServer } = require('http');
 
 const app = express();
 
@@ -20,6 +20,8 @@ const Query = require('./resolvers/Query');
 const Mutation = require('./resolvers/Mutation');
 const Subscription = require('./resolvers/Subscription');
 const User = require('./resolvers/User');
+const Team = require('./resolvers/Team');
+const TeamMembership = require('./resolvers/TeamMembership');
 const Board = require('./resolvers/Board');
 const List = require('./resolvers/List');
 const Card = require('./resolvers/Card');
@@ -30,6 +32,8 @@ const resolvers = {
   Mutation,
   Subscription,
   User,
+  Team,
+  TeamMembership,
   Board,
   List,
   Card,
@@ -52,7 +56,6 @@ server.applyMiddleware({
   app,
   path,
 });
-
 
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);

@@ -7,6 +7,9 @@ type User {
 	invited: [Board!]! @relation(name: "InvitedBoards")
   comments: [Comment!]! 
 	teams: [TeamMembership!]!
+  role: Role! @default(value: USER)
+  attempts: Int! @default(value: 0)
+  lastFailed: DateTime
 	createdAt: DateTime! @createdAt
 }
 
@@ -15,6 +18,7 @@ type Team {
 	owner: User!
 	name: String! @unique
   description: String
+  members: [TeamMembership!]!
 	boards: [Board!]!
 	createdAt: DateTime! @createdAt
 }
@@ -23,7 +27,7 @@ type TeamMembership {
 	id: ID! @id
 	user: User!
 	team: Team!
-	role: Role! @default(value: MEMBER)
+	role: TeamRole! @default(value: MEMBER)
 	createdAt: DateTime! @createdAt
 }
 
@@ -45,6 +49,7 @@ type List {
   createdBy: User!
 	name: String!
 	cards: [Card!]!
+  index: Int!
 	createdAt: DateTime! @createdAt
 }
 
@@ -55,6 +60,7 @@ type Card {
 	title: String!
 	description: String
 	comments: [Comment!]!
+  index: Int!
 	createdAt: DateTime! @createdAt
 	updatedAt: DateTime! @updatedAt
 }
@@ -65,11 +71,17 @@ type Comment {
 	postedBy: User!
 	content: String!
   replies: [Comment!]!
+  stickied: Boolean! @default(value: false)
 	createdAt: DateTime! @createdAt
 	updatedAt: DateTime! @updatedAt
 }
 
 enum Role {
+  ADMIN
+  USER
+}
+
+enum TeamRole {
 	ADMIN
 	MEMBER
 	VIEWER

@@ -11,13 +11,14 @@ type Mutation {
   createBoard(name: String!): Board
   createList(boardId: ID!, name: String!): List
   createCard(listId: ID!, title: String!): Card
-  createComment(cardId: ID!, content: String!): Comment
-  createReply(commentId: ID!, content: String!): Comment
+  postComment(cardId: ID!, content: String!): Comment
+  postReply(commentId: ID!, content: String!): Comment
 }
 
 type Subscription {
 	newList: List
 	newCard: Card
+  newComment: Comment
 }
 
 type User {
@@ -28,6 +29,7 @@ type User {
 	invited: [Board!]!
   comments: [Comment!]!
 	teams: [TeamMembership!]!
+  role: Role!
 	createdAt: DateTime!	
 }
 
@@ -36,6 +38,7 @@ type Team {
 	owner: User!
 	name: String!
   description: String
+  members: [TeamMembership!]!
 	boards: [Board!]!
 	createdAt: DateTime!
 }
@@ -44,7 +47,7 @@ type TeamMembership {
 	id: ID!
 	user: User!
 	team: Team!
-	role: Role!
+	role: TeamRole!
 	createdAt: DateTime!
 }
 
@@ -66,6 +69,7 @@ type List {
   createdBy: User!
 	name: String!
 	cards: [Card!]!
+  index: Int!
 	createdAt: DateTime!
 }
 
@@ -76,6 +80,7 @@ type Card {
 	title: String!
 	description: String!
 	comments: [Comment!]!
+  index: Int!
 	createdAt: DateTime!
 	updatedAt: DateTime!
 }
@@ -86,6 +91,7 @@ type Comment {
 	postedBy: User!
 	content: String!
   replies: [Comment!]!
+  stickied: Boolean!
 	createdAt: DateTime!
 	updatedAt: DateTime!
 }
@@ -96,6 +102,11 @@ type AuthPayload {
 }
 
 enum Role {
+	ADMIN
+	USER
+}
+
+enum TeamRole {
 	ADMIN
 	MEMBER
 	VIEWER

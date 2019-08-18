@@ -33,6 +33,7 @@
     "graphql-import": "^0.7.1",
     "helmet": "^3.20.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
     "prisma-client-lib": "^1.34.5"
   },
   "devDependencies": {

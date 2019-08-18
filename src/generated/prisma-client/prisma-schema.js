@@ -451,6 +451,7 @@ type Card {
   title: String!
   description: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  index: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -468,6 +469,7 @@ input CardCreateInput {
   title: String!
   description: String
   comments: CommentCreateManyWithoutCardInput
+  index: Int!
 }
 
 input CardCreateManyWithoutListInput {
@@ -486,6 +488,7 @@ input CardCreateWithoutCommentsInput {
   createdBy: UserCreateOneInput!
   title: String!
   description: String
+  index: Int!
 }
 
 input CardCreateWithoutListInput {
@@ -494,6 +497,7 @@ input CardCreateWithoutListInput {
   title: String!
   description: String
   comments: CommentCreateManyWithoutCardInput
+  index: Int!
 }
 
 type CardEdge {
@@ -508,6 +512,8 @@ enum CardOrderByInput {
   title_DESC
   description_ASC
   description_DESC
+  index_ASC
+  index_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -518,6 +524,7 @@ type CardPreviousValues {
   id: ID!
   title: String!
   description: String
+  index: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -565,6 +572,14 @@ input CardScalarWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  index: Int
+  index_not: Int
+  index_in: [Int!]
+  index_not_in: [Int!]
+  index_lt: Int
+  index_lte: Int
+  index_gt: Int
+  index_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -610,16 +625,19 @@ input CardUpdateInput {
   title: String
   description: String
   comments: CommentUpdateManyWithoutCardInput
+  index: Int
 }
 
 input CardUpdateManyDataInput {
   title: String
   description: String
+  index: Int
 }
 
 input CardUpdateManyMutationInput {
   title: String
   description: String
+  index: Int
 }
 
 input CardUpdateManyWithoutListInput {
@@ -651,6 +669,7 @@ input CardUpdateWithoutCommentsDataInput {
   createdBy: UserUpdateOneRequiredInput
   title: String
   description: String
+  index: Int
 }
 
 input CardUpdateWithoutListDataInput {
@@ -658,6 +677,7 @@ input CardUpdateWithoutListDataInput {
   title: String
   description: String
   comments: CommentUpdateManyWithoutCardInput
+  index: Int
 }
 
 input CardUpdateWithWhereUniqueWithoutListInput {
@@ -724,6 +744,14 @@ input CardWhereInput {
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
+  index: Int
+  index_not: Int
+  index_in: [Int!]
+  index_not_in: [Int!]
+  index_lt: Int
+  index_lte: Int
+  index_gt: Int
+  index_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -755,6 +783,7 @@ type Comment {
   postedBy: User!
   content: String!
   replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  stickied: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -771,6 +800,7 @@ input CommentCreateInput {
   postedBy: UserCreateOneWithoutCommentsInput!
   content: String!
   replies: CommentCreateManyInput
+  stickied: Boolean
 }
 
 input CommentCreateManyInput {
@@ -793,6 +823,7 @@ input CommentCreateWithoutCardInput {
   postedBy: UserCreateOneWithoutCommentsInput!
   content: String!
   replies: CommentCreateManyInput
+  stickied: Boolean
 }
 
 input CommentCreateWithoutPostedByInput {
@@ -800,6 +831,7 @@ input CommentCreateWithoutPostedByInput {
   card: CardCreateOneWithoutCommentsInput!
   content: String!
   replies: CommentCreateManyInput
+  stickied: Boolean
 }
 
 type CommentEdge {
@@ -812,6 +844,8 @@ enum CommentOrderByInput {
   id_DESC
   content_ASC
   content_DESC
+  stickied_ASC
+  stickied_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -821,6 +855,7 @@ enum CommentOrderByInput {
 type CommentPreviousValues {
   id: ID!
   content: String!
+  stickied: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -854,6 +889,8 @@ input CommentScalarWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  stickied: Boolean
+  stickied_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -898,6 +935,7 @@ input CommentUpdateDataInput {
   postedBy: UserUpdateOneRequiredWithoutCommentsInput
   content: String
   replies: CommentUpdateManyInput
+  stickied: Boolean
 }
 
 input CommentUpdateInput {
@@ -905,10 +943,12 @@ input CommentUpdateInput {
   postedBy: UserUpdateOneRequiredWithoutCommentsInput
   content: String
   replies: CommentUpdateManyInput
+  stickied: Boolean
 }
 
 input CommentUpdateManyDataInput {
   content: String
+  stickied: Boolean
 }
 
 input CommentUpdateManyInput {
@@ -925,6 +965,7 @@ input CommentUpdateManyInput {
 
 input CommentUpdateManyMutationInput {
   content: String
+  stickied: Boolean
 }
 
 input CommentUpdateManyWithoutCardInput {
@@ -960,12 +1001,14 @@ input CommentUpdateWithoutCardDataInput {
   postedBy: UserUpdateOneRequiredWithoutCommentsInput
   content: String
   replies: CommentUpdateManyInput
+  stickied: Boolean
 }
 
 input CommentUpdateWithoutPostedByDataInput {
   card: CardUpdateOneRequiredWithoutCommentsInput
   content: String
   replies: CommentUpdateManyInput
+  stickied: Boolean
 }
 
 input CommentUpdateWithWhereUniqueNestedInput {
@@ -1035,6 +1078,8 @@ input CommentWhereInput {
   replies_every: CommentWhereInput
   replies_some: CommentWhereInput
   replies_none: CommentWhereInput
+  stickied: Boolean
+  stickied_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1068,6 +1113,7 @@ type List {
   createdBy: User!
   name: String!
   cards(where: CardWhereInput, orderBy: CardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Card!]
+  index: Int!
   createdAt: DateTime!
 }
 
@@ -1083,6 +1129,7 @@ input ListCreateInput {
   createdBy: UserCreateOneInput!
   name: String!
   cards: CardCreateManyWithoutListInput
+  index: Int!
 }
 
 input ListCreateManyWithoutBoardInput {
@@ -1100,6 +1147,7 @@ input ListCreateWithoutBoardInput {
   createdBy: UserCreateOneInput!
   name: String!
   cards: CardCreateManyWithoutListInput
+  index: Int!
 }
 
 input ListCreateWithoutCardsInput {
@@ -1107,6 +1155,7 @@ input ListCreateWithoutCardsInput {
   board: BoardCreateOneWithoutListsInput!
   createdBy: UserCreateOneInput!
   name: String!
+  index: Int!
 }
 
 type ListEdge {
@@ -1119,6 +1168,8 @@ enum ListOrderByInput {
   id_DESC
   name_ASC
   name_DESC
+  index_ASC
+  index_DESC
   createdAt_ASC
   createdAt_DESC
 }
@@ -1126,6 +1177,7 @@ enum ListOrderByInput {
 type ListPreviousValues {
   id: ID!
   name: String!
+  index: Int!
   createdAt: DateTime!
 }
 
@@ -1158,6 +1210,14 @@ input ListScalarWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  index: Int
+  index_not: Int
+  index_in: [Int!]
+  index_not_in: [Int!]
+  index_lt: Int
+  index_lte: Int
+  index_gt: Int
+  index_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1194,14 +1254,17 @@ input ListUpdateInput {
   createdBy: UserUpdateOneRequiredInput
   name: String
   cards: CardUpdateManyWithoutListInput
+  index: Int
 }
 
 input ListUpdateManyDataInput {
   name: String
+  index: Int
 }
 
 input ListUpdateManyMutationInput {
   name: String
+  index: Int
 }
 
 input ListUpdateManyWithoutBoardInput {
@@ -1232,12 +1295,14 @@ input ListUpdateWithoutBoardDataInput {
   createdBy: UserUpdateOneRequiredInput
   name: String
   cards: CardUpdateManyWithoutListInput
+  index: Int
 }
 
 input ListUpdateWithoutCardsDataInput {
   board: BoardUpdateOneRequiredWithoutListsInput
   createdBy: UserUpdateOneRequiredInput
   name: String
+  index: Int
 }
 
 input ListUpdateWithWhereUniqueWithoutBoardInput {
@@ -1290,6 +1355,14 @@ input ListWhereInput {
   cards_every: CardWhereInput
   cards_some: CardWhereInput
   cards_none: CardWhereInput
+  index: Int
+  index_not: Int
+  index_in: [Int!]
+  index_not_in: [Int!]
+  index_lt: Int
+  index_lte: Int
+  index_gt: Int
+  index_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1398,8 +1471,7 @@ type Query {
 
 enum Role {
   ADMIN
-  MEMBER
-  VIEWER
+  USER
 }
 
 type Subscription {
@@ -1417,6 +1489,7 @@ type Team {
   owner: User!
   name: String!
   description: String
+  members(where: TeamMembershipWhereInput, orderBy: TeamMembershipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TeamMembership!]
   boards(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Board!]
   createdAt: DateTime!
 }
@@ -1432,12 +1505,21 @@ input TeamCreateInput {
   owner: UserCreateOneInput!
   name: String!
   description: String
+  members: TeamMembershipCreateManyWithoutTeamInput
   boards: BoardCreateManyInput
 }
 
-input TeamCreateOneInput {
-  create: TeamCreateInput
+input TeamCreateOneWithoutMembersInput {
+  create: TeamCreateWithoutMembersInput
   connect: TeamWhereUniqueInput
+}
+
+input TeamCreateWithoutMembersInput {
+  id: ID
+  owner: UserCreateOneInput!
+  name: String!
+  description: String
+  boards: BoardCreateManyInput
 }
 
 type TeamEdge {
@@ -1449,7 +1531,7 @@ type TeamMembership {
   id: ID!
   user: User!
   team: Team!
-  role: Role!
+  role: TeamRole!
   createdAt: DateTime!
 }
 
@@ -1462,8 +1544,13 @@ type TeamMembershipConnection {
 input TeamMembershipCreateInput {
   id: ID
   user: UserCreateOneWithoutTeamsInput!
-  team: TeamCreateOneInput!
-  role: Role
+  team: TeamCreateOneWithoutMembersInput!
+  role: TeamRole
+}
+
+input TeamMembershipCreateManyWithoutTeamInput {
+  create: [TeamMembershipCreateWithoutTeamInput!]
+  connect: [TeamMembershipWhereUniqueInput!]
 }
 
 input TeamMembershipCreateManyWithoutUserInput {
@@ -1471,10 +1558,16 @@ input TeamMembershipCreateManyWithoutUserInput {
   connect: [TeamMembershipWhereUniqueInput!]
 }
 
+input TeamMembershipCreateWithoutTeamInput {
+  id: ID
+  user: UserCreateOneWithoutTeamsInput!
+  role: TeamRole
+}
+
 input TeamMembershipCreateWithoutUserInput {
   id: ID
-  team: TeamCreateOneInput!
-  role: Role
+  team: TeamCreateOneWithoutMembersInput!
+  role: TeamRole
 }
 
 type TeamMembershipEdge {
@@ -1493,7 +1586,7 @@ enum TeamMembershipOrderByInput {
 
 type TeamMembershipPreviousValues {
   id: ID!
-  role: Role!
+  role: TeamRole!
   createdAt: DateTime!
 }
 
@@ -1512,10 +1605,10 @@ input TeamMembershipScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  role: Role
-  role_not: Role
-  role_in: [Role!]
-  role_not_in: [Role!]
+  role: TeamRole
+  role_not: TeamRole
+  role_in: [TeamRole!]
+  role_not_in: [TeamRole!]
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1549,16 +1642,28 @@ input TeamMembershipSubscriptionWhereInput {
 
 input TeamMembershipUpdateInput {
   user: UserUpdateOneRequiredWithoutTeamsInput
-  team: TeamUpdateOneRequiredInput
-  role: Role
+  team: TeamUpdateOneRequiredWithoutMembersInput
+  role: TeamRole
 }
 
 input TeamMembershipUpdateManyDataInput {
-  role: Role
+  role: TeamRole
 }
 
 input TeamMembershipUpdateManyMutationInput {
-  role: Role
+  role: TeamRole
+}
+
+input TeamMembershipUpdateManyWithoutTeamInput {
+  create: [TeamMembershipCreateWithoutTeamInput!]
+  delete: [TeamMembershipWhereUniqueInput!]
+  connect: [TeamMembershipWhereUniqueInput!]
+  set: [TeamMembershipWhereUniqueInput!]
+  disconnect: [TeamMembershipWhereUniqueInput!]
+  update: [TeamMembershipUpdateWithWhereUniqueWithoutTeamInput!]
+  upsert: [TeamMembershipUpsertWithWhereUniqueWithoutTeamInput!]
+  deleteMany: [TeamMembershipScalarWhereInput!]
+  updateMany: [TeamMembershipUpdateManyWithWhereNestedInput!]
 }
 
 input TeamMembershipUpdateManyWithoutUserInput {
@@ -1578,14 +1683,30 @@ input TeamMembershipUpdateManyWithWhereNestedInput {
   data: TeamMembershipUpdateManyDataInput!
 }
 
+input TeamMembershipUpdateWithoutTeamDataInput {
+  user: UserUpdateOneRequiredWithoutTeamsInput
+  role: TeamRole
+}
+
 input TeamMembershipUpdateWithoutUserDataInput {
-  team: TeamUpdateOneRequiredInput
-  role: Role
+  team: TeamUpdateOneRequiredWithoutMembersInput
+  role: TeamRole
+}
+
+input TeamMembershipUpdateWithWhereUniqueWithoutTeamInput {
+  where: TeamMembershipWhereUniqueInput!
+  data: TeamMembershipUpdateWithoutTeamDataInput!
 }
 
 input TeamMembershipUpdateWithWhereUniqueWithoutUserInput {
   where: TeamMembershipWhereUniqueInput!
   data: TeamMembershipUpdateWithoutUserDataInput!
+}
+
+input TeamMembershipUpsertWithWhereUniqueWithoutTeamInput {
+  where: TeamMembershipWhereUniqueInput!
+  update: TeamMembershipUpdateWithoutTeamDataInput!
+  create: TeamMembershipCreateWithoutTeamInput!
 }
 
 input TeamMembershipUpsertWithWhereUniqueWithoutUserInput {
@@ -1611,10 +1732,10 @@ input TeamMembershipWhereInput {
   id_not_ends_with: ID
   user: UserWhereInput
   team: TeamWhereInput
-  role: Role
-  role_not: Role
-  role_in: [Role!]
-  role_not_in: [Role!]
+  role: TeamRole
+  role_not: TeamRole
+  role_in: [TeamRole!]
+  role_not_in: [TeamRole!]
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1650,6 +1771,12 @@ type TeamPreviousValues {
   createdAt: DateTime!
 }
 
+enum TeamRole {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
 type TeamSubscriptionPayload {
   mutation: MutationType!
   node: Team
@@ -1668,17 +1795,11 @@ input TeamSubscriptionWhereInput {
   NOT: [TeamSubscriptionWhereInput!]
 }
 
-input TeamUpdateDataInput {
-  owner: UserUpdateOneRequiredInput
-  name: String
-  description: String
-  boards: BoardUpdateManyInput
-}
-
 input TeamUpdateInput {
   owner: UserUpdateOneRequiredInput
   name: String
   description: String
+  members: TeamMembershipUpdateManyWithoutTeamInput
   boards: BoardUpdateManyInput
 }
 
@@ -1687,16 +1808,23 @@ input TeamUpdateManyMutationInput {
   description: String
 }
 
-input TeamUpdateOneRequiredInput {
-  create: TeamCreateInput
-  update: TeamUpdateDataInput
-  upsert: TeamUpsertNestedInput
+input TeamUpdateOneRequiredWithoutMembersInput {
+  create: TeamCreateWithoutMembersInput
+  update: TeamUpdateWithoutMembersDataInput
+  upsert: TeamUpsertWithoutMembersInput
   connect: TeamWhereUniqueInput
 }
 
-input TeamUpsertNestedInput {
-  update: TeamUpdateDataInput!
-  create: TeamCreateInput!
+input TeamUpdateWithoutMembersDataInput {
+  owner: UserUpdateOneRequiredInput
+  name: String
+  description: String
+  boards: BoardUpdateManyInput
+}
+
+input TeamUpsertWithoutMembersInput {
+  update: TeamUpdateWithoutMembersDataInput!
+  create: TeamCreateWithoutMembersInput!
 }
 
 input TeamWhereInput {
@@ -1743,6 +1871,9 @@ input TeamWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  members_every: TeamMembershipWhereInput
+  members_some: TeamMembershipWhereInput
+  members_none: TeamMembershipWhereInput
   boards_every: BoardWhereInput
   boards_some: BoardWhereInput
   boards_none: BoardWhereInput
@@ -1773,6 +1904,9 @@ type User {
   invited(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Board!]
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   teams(where: TeamMembershipWhereInput, orderBy: TeamMembershipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TeamMembership!]
+  role: Role!
+  attempts: Int!
+  lastFailed: DateTime
   createdAt: DateTime!
 }
 
@@ -1791,6 +1925,9 @@ input UserCreateInput {
   invited: BoardCreateManyWithoutMembersInput
   comments: CommentCreateManyWithoutPostedByInput
   teams: TeamMembershipCreateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserCreateManyWithoutInvitedInput {
@@ -1826,6 +1963,9 @@ input UserCreateWithoutBoardsInput {
   invited: BoardCreateManyWithoutMembersInput
   comments: CommentCreateManyWithoutPostedByInput
   teams: TeamMembershipCreateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserCreateWithoutCommentsInput {
@@ -1836,6 +1976,9 @@ input UserCreateWithoutCommentsInput {
   boards: BoardCreateManyWithoutOwnerInput
   invited: BoardCreateManyWithoutMembersInput
   teams: TeamMembershipCreateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserCreateWithoutInvitedInput {
@@ -1846,6 +1989,9 @@ input UserCreateWithoutInvitedInput {
   boards: BoardCreateManyWithoutOwnerInput
   comments: CommentCreateManyWithoutPostedByInput
   teams: TeamMembershipCreateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserCreateWithoutTeamsInput {
@@ -1856,6 +2002,9 @@ input UserCreateWithoutTeamsInput {
   boards: BoardCreateManyWithoutOwnerInput
   invited: BoardCreateManyWithoutMembersInput
   comments: CommentCreateManyWithoutPostedByInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 type UserEdge {
@@ -1872,6 +2021,12 @@ enum UserOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  role_ASC
+  role_DESC
+  attempts_ASC
+  attempts_DESC
+  lastFailed_ASC
+  lastFailed_DESC
   createdAt_ASC
   createdAt_DESC
 }
@@ -1881,6 +2036,9 @@ type UserPreviousValues {
   name: String!
   email: String!
   password: String!
+  role: Role!
+  attempts: Int!
+  lastFailed: DateTime
   createdAt: DateTime!
 }
 
@@ -1941,6 +2099,26 @@ input UserScalarWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
+  role: Role
+  role_not: Role
+  role_in: [Role!]
+  role_not_in: [Role!]
+  attempts: Int
+  attempts_not: Int
+  attempts_in: [Int!]
+  attempts_not_in: [Int!]
+  attempts_lt: Int
+  attempts_lte: Int
+  attempts_gt: Int
+  attempts_gte: Int
+  lastFailed: DateTime
+  lastFailed_not: DateTime
+  lastFailed_in: [DateTime!]
+  lastFailed_not_in: [DateTime!]
+  lastFailed_lt: DateTime
+  lastFailed_lte: DateTime
+  lastFailed_gt: DateTime
+  lastFailed_gte: DateTime
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1980,6 +2158,9 @@ input UserUpdateDataInput {
   invited: BoardUpdateManyWithoutMembersInput
   comments: CommentUpdateManyWithoutPostedByInput
   teams: TeamMembershipUpdateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateInput {
@@ -1990,18 +2171,27 @@ input UserUpdateInput {
   invited: BoardUpdateManyWithoutMembersInput
   comments: CommentUpdateManyWithoutPostedByInput
   teams: TeamMembershipUpdateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateManyDataInput {
   name: String
   email: String
   password: String
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateManyWithoutInvitedInput {
@@ -2056,6 +2246,9 @@ input UserUpdateWithoutBoardsDataInput {
   invited: BoardUpdateManyWithoutMembersInput
   comments: CommentUpdateManyWithoutPostedByInput
   teams: TeamMembershipUpdateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateWithoutCommentsDataInput {
@@ -2065,6 +2258,9 @@ input UserUpdateWithoutCommentsDataInput {
   boards: BoardUpdateManyWithoutOwnerInput
   invited: BoardUpdateManyWithoutMembersInput
   teams: TeamMembershipUpdateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateWithoutInvitedDataInput {
@@ -2074,6 +2270,9 @@ input UserUpdateWithoutInvitedDataInput {
   boards: BoardUpdateManyWithoutOwnerInput
   comments: CommentUpdateManyWithoutPostedByInput
   teams: TeamMembershipUpdateManyWithoutUserInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateWithoutTeamsDataInput {
@@ -2083,6 +2282,9 @@ input UserUpdateWithoutTeamsDataInput {
   boards: BoardUpdateManyWithoutOwnerInput
   invited: BoardUpdateManyWithoutMembersInput
   comments: CommentUpdateManyWithoutPostedByInput
+  role: Role
+  attempts: Int
+  lastFailed: DateTime
 }
 
 input UserUpdateWithWhereUniqueWithoutInvitedInput {
@@ -2185,6 +2387,26 @@ input UserWhereInput {
   teams_every: TeamMembershipWhereInput
   teams_some: TeamMembershipWhereInput
   teams_none: TeamMembershipWhereInput
+  role: Role
+  role_not: Role
+  role_in: [Role!]
+  role_not_in: [Role!]
+  attempts: Int
+  attempts_not: Int
+  attempts_in: [Int!]
+  attempts_not_in: [Int!]
+  attempts_lt: Int
+  attempts_lte: Int
+  attempts_gt: Int
+  attempts_gte: Int
+  lastFailed: DateTime
+  lastFailed_not: DateTime
+  lastFailed_in: [DateTime!]
+  lastFailed_not_in: [DateTime!]
+  lastFailed_lt: DateTime
+  lastFailed_lte: DateTime
+  lastFailed_gt: DateTime
+  lastFailed_gte: DateTime
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

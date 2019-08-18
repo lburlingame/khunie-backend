@@ -14,7 +14,7 @@ async function signup(parent, args, context) {
       user,
     };
   } catch (err) {
-    throw new Error(err);
+    throw new Error('There was a problem making an account');
   }
 }
 
@@ -24,10 +24,36 @@ async function login(parent, args, context) {
     throw new Error('Incorrect email or password');
   }
 
+  const currentTime = new Date();
+  const timeDifference = currentTime - new Date(user.lastFailed);
+
+  if (user.attempts > 9 && timeDifference < Math.min((user.attempts - 9) * 5000, 60000)) {
+    throw new Error('Too many login attempts to this account, please try again later');
+  }
+
   const valid = await argon2.verify(user.password, args.password);
   if (!valid) {
+    await context.prisma.updateUser({
+      data: {
+        attempts: user.attempts + 1,
+        lastFailed: currentTime,
+      },
+      where: {
+        id: user.id,
+      },
+    });
+
     throw new Error('Incorrect email or password');
   }
+
+  await context.prisma.updateUser({
+    data: {
+      attempts: 0,
+    },
+    where: {
+      id: user.id,
+    },
+  });
 
   const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
 
@@ -37,7 +63,7 @@ async function login(parent, args, context) {
   };
 }
 
-function createBoard(parent, args, context) {
+async function createBoard(parent, args, context) {
   const uid = getUserId(context);
 
   return context.prisma.createBoard({
@@ -60,10 +86,20 @@ async function createList(parent, args, context) {
 async function createCard(parent, args, context) {
   const uid = getUserId(context);
 
-  return context.prisma.createList({
+  return context.prisma.createCard({
     title: args.title,
     list: { connect: { id: args.listId } },
     createdBy: { connect: { id: uid } },
+  });
+}
+
+async function postComment(parent, args, context) {
+  const uid = getUserId(context);
+
+  return context.prisma.createComment({
+    content: args.content,
+    card: { connect: { id: args.cardId } },
+    postedBy: { connect: { id: uid } },
   });
 }
 
@@ -74,4 +110,5 @@ module.exports = {
   createBoard,
   createList,
   createCard,
+  postComment,
 };

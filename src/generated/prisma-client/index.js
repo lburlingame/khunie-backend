@@ -37,6 +37,10 @@ var models = [
     embedded: false
   },
   {
+    name: "TeamRole",
+    embedded: false
+  },
+  {
     name: "Visibility",
     embedded: false
   }

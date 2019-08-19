@@ -90,6 +90,7 @@ type Comment {
 	card: Card!
 	postedBy: User!
 	content: String!
+  top: Comment
   replies: [Comment!]!
   stickied: Boolean!
 	createdAt: DateTime!

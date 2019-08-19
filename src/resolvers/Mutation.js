@@ -25,35 +25,27 @@ async function login(parent, args, context) {
   }
 
   const currentTime = new Date();
-  const timeDifference = currentTime - new Date(user.lastFailed);
+  const timeDifference = currentTime - new Date(user.lastLogin);
 
   if (user.attempts > 9 && timeDifference < Math.min((user.attempts - 9) * 5000, 60000)) {
     throw new Error('Too many login attempts to this account, please try again later');
   }
 
   const valid = await argon2.verify(user.password, args.password);
-  if (!valid) {
-    await context.prisma.updateUser({
-      data: {
-        attempts: user.attempts + 1,
-        lastFailed: currentTime,
-      },
-      where: {
-        id: user.id,
-      },
-    });
-
-    throw new Error('Incorrect email or password');
-  }
 
   await context.prisma.updateUser({
     data: {
-      attempts: 0,
+      attempts: valid ? 0 : user.attempts + 1,
+      lastLogin: currentTime,
     },
     where: {
       id: user.id,
     },
   });
+
+  if (!valid) {
+    throw new Error('Incorrect email or password');
+  }
 
   const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
 
@@ -76,20 +68,26 @@ async function createBoard(parent, args, context) {
 async function createList(parent, args, context) {
   const uid = getUserId(context);
 
+  const lists = await context.prisma.board({ id: args.boardId }).lists();
+
   return context.prisma.createList({
     name: args.name,
     board: { connect: { id: args.boardId } },
     createdBy: { connect: { id: uid } },
+    index: lists.length,
   });
 }
 
 async function createCard(parent, args, context) {
   const uid = getUserId(context);
 
+  const cards = await context.prisma.list({ id: args.listId }).cards();
+
   return context.prisma.createCard({
     title: args.title,
     list: { connect: { id: args.listId } },
     createdBy: { connect: { id: uid } },
+    index: cards.length,
   });
 }
 

@@ -782,6 +782,7 @@ type Comment {
   card: Card!
   postedBy: User!
   content: String!
+  top: Comment
   replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   stickied: Boolean!
   createdAt: DateTime!
@@ -799,13 +800,9 @@ input CommentCreateInput {
   card: CardCreateOneWithoutCommentsInput!
   postedBy: UserCreateOneWithoutCommentsInput!
   content: String!
-  replies: CommentCreateManyInput
+  top: CommentCreateOneWithoutRepliesInput
+  replies: CommentCreateManyWithoutTopInput
   stickied: Boolean
-}
-
-input CommentCreateManyInput {
-  create: [CommentCreateInput!]
-  connect: [CommentWhereUniqueInput!]
 }
 
 input CommentCreateManyWithoutCardInput {
@@ -818,11 +815,22 @@ input CommentCreateManyWithoutPostedByInput {
   connect: [CommentWhereUniqueInput!]
 }
 
+input CommentCreateManyWithoutTopInput {
+  create: [CommentCreateWithoutTopInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateOneWithoutRepliesInput {
+  create: CommentCreateWithoutRepliesInput
+  connect: CommentWhereUniqueInput
+}
+
 input CommentCreateWithoutCardInput {
   id: ID
   postedBy: UserCreateOneWithoutCommentsInput!
   content: String!
-  replies: CommentCreateManyInput
+  top: CommentCreateOneWithoutRepliesInput
+  replies: CommentCreateManyWithoutTopInput
   stickied: Boolean
 }
 
@@ -830,7 +838,26 @@ input CommentCreateWithoutPostedByInput {
   id: ID
   card: CardCreateOneWithoutCommentsInput!
   content: String!
-  replies: CommentCreateManyInput
+  top: CommentCreateOneWithoutRepliesInput
+  replies: CommentCreateManyWithoutTopInput
+  stickied: Boolean
+}
+
+input CommentCreateWithoutRepliesInput {
+  id: ID
+  card: CardCreateOneWithoutCommentsInput!
+  postedBy: UserCreateOneWithoutCommentsInput!
+  content: String!
+  top: CommentCreateOneWithoutRepliesInput
+  stickied: Boolean
+}
+
+input CommentCreateWithoutTopInput {
+  id: ID
+  card: CardCreateOneWithoutCommentsInput!
+  postedBy: UserCreateOneWithoutCommentsInput!
+  content: String!
+  replies: CommentCreateManyWithoutTopInput
   stickied: Boolean
 }
 
@@ -930,37 +957,18 @@ input CommentSubscriptionWhereInput {
   NOT: [CommentSubscriptionWhereInput!]
 }
 
-input CommentUpdateDataInput {
-  card: CardUpdateOneRequiredWithoutCommentsInput
-  postedBy: UserUpdateOneRequiredWithoutCommentsInput
-  content: String
-  replies: CommentUpdateManyInput
-  stickied: Boolean
-}
-
 input CommentUpdateInput {
   card: CardUpdateOneRequiredWithoutCommentsInput
   postedBy: UserUpdateOneRequiredWithoutCommentsInput
   content: String
-  replies: CommentUpdateManyInput
+  top: CommentUpdateOneWithoutRepliesInput
+  replies: CommentUpdateManyWithoutTopInput
   stickied: Boolean
 }
 
 input CommentUpdateManyDataInput {
   content: String
   stickied: Boolean
-}
-
-input CommentUpdateManyInput {
-  create: [CommentCreateInput!]
-  update: [CommentUpdateWithWhereUniqueNestedInput!]
-  upsert: [CommentUpsertWithWhereUniqueNestedInput!]
-  delete: [CommentWhereUniqueInput!]
-  connect: [CommentWhereUniqueInput!]
-  set: [CommentWhereUniqueInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
 
 input CommentUpdateManyMutationInput {
@@ -992,28 +1000,62 @@ input CommentUpdateManyWithoutPostedByInput {
   updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
 
+input CommentUpdateManyWithoutTopInput {
+  create: [CommentCreateWithoutTopInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutTopInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutTopInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
 input CommentUpdateManyWithWhereNestedInput {
   where: CommentScalarWhereInput!
   data: CommentUpdateManyDataInput!
 }
 
+input CommentUpdateOneWithoutRepliesInput {
+  create: CommentCreateWithoutRepliesInput
+  update: CommentUpdateWithoutRepliesDataInput
+  upsert: CommentUpsertWithoutRepliesInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CommentWhereUniqueInput
+}
+
 input CommentUpdateWithoutCardDataInput {
   postedBy: UserUpdateOneRequiredWithoutCommentsInput
   content: String
-  replies: CommentUpdateManyInput
+  top: CommentUpdateOneWithoutRepliesInput
+  replies: CommentUpdateManyWithoutTopInput
   stickied: Boolean
 }
 
 input CommentUpdateWithoutPostedByDataInput {
   card: CardUpdateOneRequiredWithoutCommentsInput
   content: String
-  replies: CommentUpdateManyInput
+  top: CommentUpdateOneWithoutRepliesInput
+  replies: CommentUpdateManyWithoutTopInput
   stickied: Boolean
 }
 
-input CommentUpdateWithWhereUniqueNestedInput {
-  where: CommentWhereUniqueInput!
-  data: CommentUpdateDataInput!
+input CommentUpdateWithoutRepliesDataInput {
+  card: CardUpdateOneRequiredWithoutCommentsInput
+  postedBy: UserUpdateOneRequiredWithoutCommentsInput
+  content: String
+  top: CommentUpdateOneWithoutRepliesInput
+  stickied: Boolean
+}
+
+input CommentUpdateWithoutTopDataInput {
+  card: CardUpdateOneRequiredWithoutCommentsInput
+  postedBy: UserUpdateOneRequiredWithoutCommentsInput
+  content: String
+  replies: CommentUpdateManyWithoutTopInput
+  stickied: Boolean
 }
 
 input CommentUpdateWithWhereUniqueWithoutCardInput {
@@ -1026,10 +1068,14 @@ input CommentUpdateWithWhereUniqueWithoutPostedByInput {
   data: CommentUpdateWithoutPostedByDataInput!
 }
 
-input CommentUpsertWithWhereUniqueNestedInput {
+input CommentUpdateWithWhereUniqueWithoutTopInput {
   where: CommentWhereUniqueInput!
-  update: CommentUpdateDataInput!
-  create: CommentCreateInput!
+  data: CommentUpdateWithoutTopDataInput!
+}
+
+input CommentUpsertWithoutRepliesInput {
+  update: CommentUpdateWithoutRepliesDataInput!
+  create: CommentCreateWithoutRepliesInput!
 }
 
 input CommentUpsertWithWhereUniqueWithoutCardInput {
@@ -1042,6 +1088,12 @@ input CommentUpsertWithWhereUniqueWithoutPostedByInput {
   where: CommentWhereUniqueInput!
   update: CommentUpdateWithoutPostedByDataInput!
   create: CommentCreateWithoutPostedByInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutTopInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutTopDataInput!
+  create: CommentCreateWithoutTopInput!
 }
 
 input CommentWhereInput {
@@ -1075,6 +1127,7 @@ input CommentWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  top: CommentWhereInput
   replies_every: CommentWhereInput
   replies_some: CommentWhereInput
   replies_none: CommentWhereInput
@@ -1906,7 +1959,7 @@ type User {
   teams(where: TeamMembershipWhereInput, orderBy: TeamMembershipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TeamMembership!]
   role: Role!
   attempts: Int!
-  lastFailed: DateTime
+  lastLogin: DateTime
   createdAt: DateTime!
 }
 
@@ -1927,7 +1980,7 @@ input UserCreateInput {
   teams: TeamMembershipCreateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserCreateManyWithoutInvitedInput {
@@ -1965,7 +2018,7 @@ input UserCreateWithoutBoardsInput {
   teams: TeamMembershipCreateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserCreateWithoutCommentsInput {
@@ -1978,7 +2031,7 @@ input UserCreateWithoutCommentsInput {
   teams: TeamMembershipCreateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserCreateWithoutInvitedInput {
@@ -1991,7 +2044,7 @@ input UserCreateWithoutInvitedInput {
   teams: TeamMembershipCreateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserCreateWithoutTeamsInput {
@@ -2004,7 +2057,7 @@ input UserCreateWithoutTeamsInput {
   comments: CommentCreateManyWithoutPostedByInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 type UserEdge {
@@ -2025,8 +2078,8 @@ enum UserOrderByInput {
   role_DESC
   attempts_ASC
   attempts_DESC
-  lastFailed_ASC
-  lastFailed_DESC
+  lastLogin_ASC
+  lastLogin_DESC
   createdAt_ASC
   createdAt_DESC
 }
@@ -2038,7 +2091,7 @@ type UserPreviousValues {
   password: String!
   role: Role!
   attempts: Int!
-  lastFailed: DateTime
+  lastLogin: DateTime
   createdAt: DateTime!
 }
 
@@ -2111,14 +2164,14 @@ input UserScalarWhereInput {
   attempts_lte: Int
   attempts_gt: Int
   attempts_gte: Int
-  lastFailed: DateTime
-  lastFailed_not: DateTime
-  lastFailed_in: [DateTime!]
-  lastFailed_not_in: [DateTime!]
-  lastFailed_lt: DateTime
-  lastFailed_lte: DateTime
-  lastFailed_gt: DateTime
-  lastFailed_gte: DateTime
+  lastLogin: DateTime
+  lastLogin_not: DateTime
+  lastLogin_in: [DateTime!]
+  lastLogin_not_in: [DateTime!]
+  lastLogin_lt: DateTime
+  lastLogin_lte: DateTime
+  lastLogin_gt: DateTime
+  lastLogin_gte: DateTime
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -2160,7 +2213,7 @@ input UserUpdateDataInput {
   teams: TeamMembershipUpdateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateInput {
@@ -2173,7 +2226,7 @@ input UserUpdateInput {
   teams: TeamMembershipUpdateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateManyDataInput {
@@ -2182,7 +2235,7 @@ input UserUpdateManyDataInput {
   password: String
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateManyMutationInput {
@@ -2191,7 +2244,7 @@ input UserUpdateManyMutationInput {
   password: String
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateManyWithoutInvitedInput {
@@ -2248,7 +2301,7 @@ input UserUpdateWithoutBoardsDataInput {
   teams: TeamMembershipUpdateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateWithoutCommentsDataInput {
@@ -2260,7 +2313,7 @@ input UserUpdateWithoutCommentsDataInput {
   teams: TeamMembershipUpdateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateWithoutInvitedDataInput {
@@ -2272,7 +2325,7 @@ input UserUpdateWithoutInvitedDataInput {
   teams: TeamMembershipUpdateManyWithoutUserInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateWithoutTeamsDataInput {
@@ -2284,7 +2337,7 @@ input UserUpdateWithoutTeamsDataInput {
   comments: CommentUpdateManyWithoutPostedByInput
   role: Role
   attempts: Int
-  lastFailed: DateTime
+  lastLogin: DateTime
 }
 
 input UserUpdateWithWhereUniqueWithoutInvitedInput {
@@ -2399,14 +2452,14 @@ input UserWhereInput {
   attempts_lte: Int
   attempts_gt: Int
   attempts_gte: Int
-  lastFailed: DateTime
-  lastFailed_not: DateTime
-  lastFailed_in: [DateTime!]
-  lastFailed_not_in: [DateTime!]
-  lastFailed_lt: DateTime
-  lastFailed_lte: DateTime
-  lastFailed_gt: DateTime
-  lastFailed_gte: DateTime
+  lastLogin: DateTime
+  lastLogin_not: DateTime
+  lastLogin_in: [DateTime!]
+  lastLogin_not_in: [DateTime!]
+  lastLogin_lt: DateTime
+  lastLogin_lte: DateTime
+  lastLogin_gt: DateTime
+  lastLogin_gte: DateTime
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

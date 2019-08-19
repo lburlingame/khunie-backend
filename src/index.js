@@ -8,11 +8,14 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const app = express();
+app.use(cors());
+app.use(helmet());
 
 const path = '/graphql';
 const PORT = 4000;
 
 const { importSchema } = require('graphql-import');
+const { makeExecutableSchema } = require('graphql-tools');
 const { prisma } = require('./generated/prisma-client');
 
 const typeDefs = importSchema('src/schema.graphql');
@@ -40,17 +43,18 @@ const resolvers = {
   Comment,
 };
 
-const server = new ApolloServer({
+const schema = makeExecutableSchema({ 
   typeDefs,
   resolvers,
+});
+
+const server = new ApolloServer({
+  schema,
   context: (req) => ({
     ...req,
     prisma,
   }),
 });
-
-app.use(cors());
-app.use(helmet());
 
 server.applyMiddleware({
   app,

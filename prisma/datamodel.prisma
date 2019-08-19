@@ -9,7 +9,7 @@ type User {
 	teams: [TeamMembership!]!
   role: Role! @default(value: USER)
   attempts: Int! @default(value: 0)
-  lastFailed: DateTime
+  lastLogin: DateTime
 	createdAt: DateTime! @createdAt
 }
 
@@ -70,7 +70,8 @@ type Comment {
 	card: Card!
 	postedBy: User!
 	content: String!
-  replies: [Comment!]!
+  top: Comment @relation(name: "Replies")
+  replies: [Comment!]! @relation(name: "Replies")
   stickied: Boolean! @default(value: false)
 	createdAt: DateTime! @createdAt
 	updatedAt: DateTime! @updatedAt

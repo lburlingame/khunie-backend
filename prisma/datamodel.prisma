@@ -3,8 +3,8 @@ type User {
   name: String! @unique
   email: String! @unique
   password: String!
-	boards: [Board!]! @relation(name: "OwnedBoards")
-	invited: [Board!]! @relation(name: "InvitedBoards")
+  boards: [Board!]! @relation(name: "OwnedBoards")
+  invited: [Board!]! @relation(name: "InvitedBoards")
   comments: [Comment!]! 
 	teams: [TeamMembership!]!
   role: Role! @default(value: USER)

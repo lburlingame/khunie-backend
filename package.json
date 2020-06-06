@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/lburlingame/khunie-backend#readme",
   "dependencies": {
-    "apollo-server-express": "^2.8.1",
+    "apollo-server-express": "^2.14.2",
     "argon2": "^0.24.0",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
